@@ -1,12 +1,15 @@
 package Rest;
 
 import dev.Service.PostService;
+import dev.Service.UserService;
+import dev.domain.AvailableForDonation;
+import dev.domain.CompletePost;
 import dev.domain.Post;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
-
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/posts")
 public class RestControllerOfPost {
@@ -15,10 +18,17 @@ public class RestControllerOfPost {
     public List<Post> getAllPosts() throws SQLException, ClassNotFoundException {
         return PostService.getAllPosts();
     }
-
+    @GetMapping("/totaldonation/count")
+    public int countUsers() throws SQLException, ClassNotFoundException {
+        return PostService.countTotalDonation();
+    }
     @GetMapping("/{id}")
     public Post getPostById(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
         return PostService.getById(id);
+    }
+    @GetMapping("/availablefordonation/{id}")
+    public AvailableForDonation availablefordonation(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        return PostService.availablefordonation(id);
     }
     @GetMapping("/pendingPosts")
     public List<Post> getPendingPosts() throws SQLException, ClassNotFoundException {
@@ -34,9 +44,9 @@ public class RestControllerOfPost {
     public Post addPost(@RequestBody Post post) throws SQLException, ClassNotFoundException {
         return PostService.create(post);
     }
-    @PostMapping("/help/{id}/{ID}")
-    public Post HelpPost(@RequestBody Post post) throws SQLException, ClassNotFoundException {
-        return PostService.create(post);
+    @PostMapping("/help/user/{id}/post/{PostId}")
+    public CompletePost HelpPost(@PathVariable("id") Integer id,@PathVariable("PostId") Integer PostId) throws SQLException, ClassNotFoundException {
+        return PostService.help(PostId,id);
     }
 
     @PutMapping("/{id}")
@@ -49,15 +59,21 @@ public class RestControllerOfPost {
         PostService.delete(id);
         return "Deleted";
     }
-    @PostMapping("/changeStatus/{id}")
+  /*  @PutMapping("/changeStatus/{id}")
     public String changePostStatus(@PathVariable("id") Integer id, @RequestBody String newStatus) throws SQLException, ClassNotFoundException {
-        // Fetch the post by ID from the database
-
-        PostService.changePostStatus(id,newStatus);
+        Post post= PostService.getById(id);
+        post.setStatusOfPost(Post.StatusOfPost.valueOf(newStatus));
+        PostService.changePostStatus(id,post);
 
         return "ok";
-    }
+    }*/
+   @PutMapping("/changeStatus")
+   public String changePostStatus(@RequestBody Post post) throws SQLException, ClassNotFoundException {
+       post.setStatusOfPost(Post.StatusOfPost.valueOf(post.getStatusOfPost().toString()));
+       PostService.changePostStatus(post);
 
+       return "ok";
+   }
     @GetMapping("/count")
     public int countPosts() throws SQLException, ClassNotFoundException {
         return PostService.count();

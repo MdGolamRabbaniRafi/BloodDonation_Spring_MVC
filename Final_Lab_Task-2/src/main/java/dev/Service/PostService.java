@@ -1,6 +1,8 @@
 package dev.Service;
 
 import dev.Repository.database.PostRepository;
+import dev.domain.AvailableForDonation;
+import dev.domain.CompletePost;
 import dev.domain.Post;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,9 @@ public class PostService {
     public static Post update(Integer id, Post post) throws SQLException, ClassNotFoundException {
         return PostRepository.update(id,post);
     }
-    public static Post changePostStatus(Integer id, String newStatus) throws SQLException, ClassNotFoundException {
+    public static Post changePostStatus(Post post) throws SQLException, ClassNotFoundException {
 
-        return PostRepository.changePostStatus(id,newStatus);
+        return PostRepository.changePostStatus(post);
     }
     public static void delete(Integer id) throws SQLException, ClassNotFoundException {
         PostRepository.deleteById(id);
@@ -42,5 +44,16 @@ public class PostService {
     }
     public static int count() throws SQLException, ClassNotFoundException {
         return PostRepository.count();
+    }
+    public static CompletePost help(Integer PostId, Integer id) throws SQLException, ClassNotFoundException {
+        return PostRepository.help(PostId,id);
+    }
+
+    public static int countTotalDonation() throws SQLException, ClassNotFoundException {
+        return PostRepository.countTotalDonation();
+    }
+
+    public static AvailableForDonation availablefordonation(Integer id) throws SQLException, ClassNotFoundException {
+        return PostRepository.culateAvalableForDonationUpdate(id);
     }
 }

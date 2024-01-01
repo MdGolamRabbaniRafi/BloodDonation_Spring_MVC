@@ -8,9 +8,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:3000")
 public class RestControllerOfUser {
-
-
     @GetMapping("/users")
     public List<User> getUsers() throws SQLException, ClassNotFoundException {
         return UserService.getAlluser();

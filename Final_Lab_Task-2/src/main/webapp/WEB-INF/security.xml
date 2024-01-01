@@ -5,13 +5,14 @@
          xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
                              http://www.springframework.org/schema/security https://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http auto-config="true" >
+    <http auto-config="true">
+        <cors configuration-source-ref="corsSource"/>
         <csrf disabled="true"/>
         <intercept-url pattern="/posts/**"
-                       access="hasRole('ROLE_ADMIN')" />
+                       access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/"
-                                access="permitAll" />
-<http-basic/>
+                       access="permitAll"/>
+        <http-basic/>
     </http>
 
 
@@ -22,13 +23,36 @@
     -->
 
     <b:bean id="dataSource" class="com.mysql.cj.jdbc.MysqlDataSource">
-        <b:property name="url" value="jdbc:mysql://localhost:3306/final_lab_task-1?useSSL=false&amp;serverTimezone=UTC"/> <!-- Updated database name and added timezone configuration -->
+        <b:property name="url"
+                    value="jdbc:mysql://localhost:3306/final_lab_task-1?useSSL=false&amp;serverTimezone=UTC"/> <!-- Updated database name and added timezone configuration -->
         <b:property name="user" value="root"/> <!-- Replace with actual username -->
         <b:property name="password" value="1234"/> <!-- Replace with actual password -->
     </b:bean>
 
     <b:bean id="noOpPasswordEncoder"
             class="org.springframework.security.crypto.password.NoOpPasswordEncoder">
+    </b:bean>
+    <b:bean id="corsConfiguration" class="org.springframework.web.cors.CorsConfiguration">
+        <b:property name="allowedOrigins">
+            <b:list>
+                <b:value>http://localhost:3000</b:value>
+            </b:list>
+        </b:property>
+        <b:property name="allowedMethods">
+            <b:list>
+                <b:value>GET</b:value>
+                <b:value>POST</b:value>
+            </b:list>
+        </b:property>
+        <!-- Other properties if needed -->
+    </b:bean>
+
+    <b:bean id="corsSource" class="org.springframework.web.cors.UrlBasedCorsConfigurationSource">
+        <b:property name="corsConfigurations">
+            <b:map>
+                <b:entry key="/**" value-ref="corsConfiguration" />
+            </b:map>
+        </b:property>
     </b:bean>
 
     <security:authentication-manager alias="authenticationManager">
@@ -46,7 +70,7 @@
         INNER JOIN users u ON u.id = ur.user_id
         WHERE u.Email = ?"
             />
-            <security:password-encoder ref="noOpPasswordEncoder" />
+            <security:password-encoder ref="noOpPasswordEncoder"/>
         </security:authentication-provider>
     </security:authentication-manager>
 

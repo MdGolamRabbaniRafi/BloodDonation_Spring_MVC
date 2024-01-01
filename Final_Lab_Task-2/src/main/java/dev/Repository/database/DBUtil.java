@@ -38,7 +38,7 @@ public class DBUtil {
     }
     public static void create(User user) throws SQLException, ClassNotFoundException {
         Connection connection = ConnectionManager.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (Id, FullName, Email, DOB, Gender, Country, enabled) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (Id, FullName, Email, DOB, Gender, Country, enabled, Password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         preparedStatement.setInt(1, user.getId());
 
         preparedStatement.setString(2, user.getFullname());
@@ -47,6 +47,8 @@ public class DBUtil {
         preparedStatement.setString(5, String.valueOf(user.getGender()));
         preparedStatement.setString(6, user.getCountry());
         preparedStatement.setInt(7, 1);
+        preparedStatement.setString(8, user.getPassword());
+
 
         preparedStatement.execute();
     }
